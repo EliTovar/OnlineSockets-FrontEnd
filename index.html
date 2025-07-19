@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/public/images/icon.png" />
+    <title>3D-Models Animated!</title>
+    <link rel="stylesheet" href="/src/style.scss">
+    <link href="https://cdn.jsdelivr.net/combine/npm/daisyui@5/base/svg.css,npm/daisyui@5/base/reset.css,npm/daisyui@5/base/scrollbar.css,npm/daisyui@5/base/rootcolor.css,npm/daisyui@5/base/rootscrolllock.css,npm/daisyui@5/base/rootscrollgutter.css,npm/daisyui@5/base/properties.css,npm/daisyui@5/components/button.css,npm/daisyui@5/components/menu.css,npm/daisyui@5/components/select.css,npm/daisyui@5/components/toggle.css,npm/daisyui@5/components/checkbox.css,npm/daisyui@5/components/input.css,npm/daisyui@5/components/kbd.css,npm/daisyui@5/theme/night.css,npm/daisyui@5/theme/light.css" rel="stylesheet" type="text/css" />
+    
+
+    <!-- <link rel="stylesheet" href="/src/UI/key_indications.css"> -->
+    
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <div class="experience">
+      <canvas id="experience-canvas" class="experience-canvas"></canvas>
+      <div id="texto-sobrepuesto">
+        <div id="keysText" class=" w-38 transition-all duration-500 overflow-hidden">
+            <p class="text-sm font-bold underline text-white">Press <kbd class="kbd kbd-sm text-black">W</kbd>to walk.</p>
+            <p class="text-sm font-bold underline text-white">Press <kbd class="kbd kbd-sm text-black">S</kbd>Sto backward.</p>
+            <p class="text-sm font-bold underline text-white">Press <kbd class="kbd kbd-sm text-black">A</kbd>to go left.</p>
+            <p class="text-sm font-bold underline text-white">Press <kbd class="kbd kbd-sm text-black">D</kbd>to go right.</p>
+    </div>
+</div>
+        </div>
+
+    <script type="module" src="/src/main3.js"></script>
+  </body>
+</html>
