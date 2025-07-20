@@ -1,7 +1,5 @@
 import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
+
 export default defineConfig({
-  plugins: [
-    tailwindcss(),
-  ],
+  base: '/OnlineSockets-FrontEnd/' // usa el nombre del repo de GitHub
 })

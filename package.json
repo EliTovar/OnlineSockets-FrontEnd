@@ -6,9 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "autoprefixer": "^10.4.21",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.11",
     "vite": "^7.0.0"
   },
   "dependencies": {
@@ -16,7 +23,6 @@
     "gsap": "^3.13.0",
     "sass": "^1.89.2",
     "socket.io-client": "^4.8.1",
-    "tailwindcss": "^4.1.11",
     "three": "^0.177.0"
   }
 }

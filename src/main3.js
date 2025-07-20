@@ -7,7 +7,9 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 //Importación y conexión del socket
 import { io } from "socket.io-client";
-const socket = io('http://localhost:3000'); // asegúrate de que el backend esté en este puerto
+const socket = io(import.meta.env.PROD
+  ? 'https://server-onlinesockets.onrender.com'
+  : 'http://localhost:3000');
 
 //Indicator cube
 import { loadCubePosition } from '/public/models/shared/position-3d-model/cube';
