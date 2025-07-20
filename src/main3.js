@@ -129,9 +129,9 @@ const loader = new GLTFLoader(); //Carga modelos .glb o .gltf
 loader.setDRACOLoader(dracoLoader); //Si el modelo esta comprimido, usa el decodificador.
 
 //? Cambiar entre Dia y Noche.
-const textureMap = { //Objeto que almacena rutas apra cambiar el entorno.
+const textureMap = {
   First: {
-    day: "/textures/room/day/first_texture_set_day.webp",
+    day: basePath + "textures/room/day/first_texture_set_day.webp",
   }
 };
 
@@ -155,7 +155,7 @@ Object.entries(textureMap).forEach(([key, paths]) => { //Recorre el textureMap y
 const modelPath = import.meta.env.BASE_URL + 'models/Room_Portfolio.glb';
 loader.load(modelPath, (gltf) => {
   scene.add(gltf.scene);
-  glb.scene.traverse((child) => { //-Recorre todos los objetos dentro del modelo. -Para cada objeto (child):
+  gltf.scene.traverse((child) => { //-Recorre todos los objetos dentro del modelo. -Para cada objeto (child):
     if (child.isMesh) { //Verifica si 'child' es un malla (isMesh).
 
       Object.entries(textureMap).forEach(([key]) => { //Esto recorre cada conjunto de texturas que se definio en textureMap: ('First', 'Second', ...).
@@ -172,7 +172,7 @@ loader.load(modelPath, (gltf) => {
     }
   });
 
-  scene.add(glb.scene); //Se agrega el modelo a l aescena
+  scene.add(gltf.scene); //Se agrega el modelo a l aescena
 
   //? Carga de IndicatorCube ------------------------------->
   loadCubePosition(scene, (cube1) => {
