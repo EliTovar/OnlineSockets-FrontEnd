@@ -121,7 +121,9 @@ const textureLoader = new THREE.TextureLoader(); //Cargar imágenes que luego pu
 
 //*Model Loader
 const dracoLoader = new DRACOLoader(); //Cargar modelos comprimidos en formato .glb/.gltf que usen DRACO.
-dracoLoader.setDecoderPath("/draco/"); //Ubicación del decodificador.
+const basePath = import.meta.env.BASE_URL;
+dracoLoader.setDecoderPath(basePath + "draco/");
+
 
 const loader = new GLTFLoader(); //Carga modelos .glb o .gltf
 loader.setDRACOLoader(dracoLoader); //Si el modelo esta comprimido, usa el decodificador.
