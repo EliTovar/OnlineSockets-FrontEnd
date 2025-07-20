@@ -150,7 +150,9 @@ Object.entries(textureMap).forEach(([key, paths]) => { //Recorre el textureMap y
   loadedTextures.night[key] = nightTexture;
 });
 
-loader.load("/models/Room_Portfolio.glb", (glb) => { //Se carga el modelo y se ejecuta la función (glb){...}
+const modelPath = import.meta.env.BASE_URL + 'models/Room_Portfolio.glb';
+loader.load(modelPath, (gltf) => {
+  scene.add(gltf.scene);
   glb.scene.traverse((child) => { //-Recorre todos los objetos dentro del modelo. -Para cada objeto (child):
     if (child.isMesh) { //Verifica si 'child' es un malla (isMesh).
 
