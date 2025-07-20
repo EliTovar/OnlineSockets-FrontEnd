@@ -43,7 +43,9 @@ function addRemotePlayer(id, data) {
   console.log("➕ Añadiendo jugador remoto:", id, data);
 
   loadFBXPersonaje(scene, (personaje, animations) => {
-    personaje.position.copy(data.position);
+    if (data.position) {
+    personaje.position.set(data.position.x, data.position.y, data.position.z);
+  }
     personaje.rotation.y = data.rotation?.y || 0;
     scene.add(personaje);
 
@@ -57,14 +59,17 @@ function addRemotePlayer(id, data) {
 }
 
 
-
+// Suavizar posición en vez de copiarla directo
 function updateRemotePlayer(id, position, rotation) {
   const remote = remotePlayers[id];
   if (remote) {
-    remote.personaje.position.copy(position);
-    if (rotation) remote.personaje.rotation.y = rotation.y;
+    remote.targetPosition = new THREE.Vector3(position.x, position.y, position.z);
+    if (rotation) {
+      remote.targetRotationY = rotation._y || rotation.y;
+    }
   }
 }
+
 
 function removeRemotePlayer(id) {
   const remote = remotePlayers[id];
@@ -93,14 +98,10 @@ socket.on('player-moved', (data) => {
     console.warn(`❓ Jugador ${id} no encontrado aún, ignorando posición`);
     return;
   }
+  updateRemotePlayer(id, data.position, data.rotation);
 
-  const remote = remotePlayers[id];
-  //Actualiza posicion y rotación
-  remote.personaje.position.set(data.position.x, data.position.y, data.position.z);
-  remote.personaje.rotation.set(data.rotation._x, data.rotation._y, data.rotation._z);
-
-  if (data.animation && remote.controller) {
-    remote.controler._changeAnimations(data.animation);
+  if (data.animation && remotePlayers[id].controller) {
+    remotePlayers[id].controller._changeAnimations(data.animation);
   }
   console.log('📦 Actualizando jugador remoto:', id);
 });
@@ -261,19 +262,36 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-function animate() {
-  
-}
+// function animate() {}
+
+let lastSentPosition = new THREE.Vector3();
+let lastSentRotationY = 0;
+let lastSentAnimation = '';
 
 setInterval(() => {
   if (personajeController && personajeController.personaje) {
-    socket.emit('update-position', {
-      position: personajeController.personaje.position.clone(),
-      rotation: personajeController.personaje.rotation.clone(),
-      animation: personajeController.currentAnimationName // ← aquí se envía la animación actual
-    });
+    const pos = personajeController.personaje.position;
+    const rot = personajeController.personaje.rotation;
+    const anim = personajeController.currentAnimationName;
+
+    const moved = pos.distanceToSquared(lastSentPosition) > 0.0001;
+    const rotated = Math.abs(rot.y - lastSentRotationY) > 0.001;
+    const animChanged = anim !== lastSentAnimation;
+
+    if (moved || rotated || animChanged) {
+      socket.emit('update-position', {
+        position: pos.clone(),
+        rotation: rot.clone(),
+        animation: anim
+      });
+
+      lastSentPosition.copy(pos);
+      lastSentRotationY = rot.y;
+      lastSentAnimation = anim;
+    }
   }
 }, 100);
+
 
 
 
@@ -288,15 +306,22 @@ const render = () => {
   }
 
   for (const id in remotePlayers) {
-    remotePlayers[id].controller.update(deltaTime); // ✅ Animaciones remotas
+    const remote = remotePlayers[id];
+    remote.controller.update(deltaTime);
+
+    if (remote.targetPosition) {
+      remote.personaje.position.lerp(remote.targetPosition, 0.1);
+    }
+
+    if (typeof remote.targetRotationY === "number") {
+      remote.personaje.rotation.y += (remote.targetRotationY - remote.personaje.rotation.y) * 0.1;
+    }
   }
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(render);
+  controls.update(); // necesario si usas damping
+  renderer.render(scene, camera); // <--- lo olvidaste
+  requestAnimationFrame(render);  // <--- esto reinicia el bucle
 };
 
-
-render();
+renderer.render(scene, camera);
+requestAnimationFrame(render); // inicia el bucle de animación
