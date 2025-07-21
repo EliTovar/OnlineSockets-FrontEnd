@@ -1,3 +1,4 @@
+//Núcleo de la app (escena, cámara, render loop)
 
 import "./style.css";
 import * as THREE from "three";

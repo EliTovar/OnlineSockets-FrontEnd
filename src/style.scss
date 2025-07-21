@@ -1,4 +1,4 @@
-// @import "tailwindcss";
+//@import "tailwindcss";
 
 
 *{
@@ -35,8 +35,7 @@
 #texto-sobrepuesto {
   position: absolute;
   top: 20px;
-  left: 200px;
-  color: white;
+  left: 10px;
   font-size: 15px;
   z-index: 10;
 }
