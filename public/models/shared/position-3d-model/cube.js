@@ -1,30 +1,30 @@
 import * as THREE from 'three';
 
 /**
- * Crea un cubo y lo agrega a la escena principal.
+ * Crea un cubo seguidor.
  * @param {THREE.Scene} scene - Escena principal
- * @param {Function} onLoad - Función callback cuando el cubo esté listo
+ * @param {THREE.Object3D} targetObject - Objeto a seguir (por ejemplo, el personaje)
+ * @returns {{ cube: THREE.Mesh, update: Function }}
  */
+export function loadCubePosition(scene, targetObject) {
+  const geometry = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+  const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const cube = new THREE.Mesh(geometry, material);
 
+  scene.add(cube);
 
+  // Función de actualización
+  const update = () => {
+    if (targetObject) {
+      const targetPosition = new THREE.Vector3();
+      targetObject.getWorldPosition(targetPosition);
+      cube.position.set(targetPosition.x, targetPosition.y + 9, targetPosition.z);
 
-export function loadCubePosition(scene, onLoad = () => {}) {
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setAnimationLoop( animate );
+      // Opcional: animación de rotación
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+    }
+  };
 
-  const geometry = new THREE.BoxGeometry(0.50, 0.50, 0.50);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const cube1 = new THREE.Mesh(geometry, material);
-  cube1.name = 'FollowerCube';
-  scene.add(cube1);
-
-  onLoad(cube1); // ✅ Aquí devolvemos el cubo creado correctamente
-
-  //Le pongo una animación.
-  function animate() {
-  cube1.rotation.x += 0.01;
-  cube1.rotation.y += 0.01;
-
-
-}
+  return { cube, update };
 }
