@@ -5,6 +5,9 @@ import { Cube } from './content/world/Cube.js';
 import { MultiplayerManager } from './MultiplayerManager.js';
 import { loadCubePosition } from '/public/models/shared/position-3d-model/cube';
 
+//Nuevas importaciones*
+import { loadGLTFClouds } from './content/world/cloudring.js';
+
 // Crear escena, cámara y renderer
 const sceneManager = new SceneManager();
 sceneManager.init();
@@ -12,9 +15,20 @@ sceneManager.init();
 // Controles de cámara
 const controls = new OrbitControlManager(sceneManager.camera, sceneManager.renderer.domElement);
 
-// Cubo de seguimiento o entorno
+//! Cubo entorno (mapa)
 const cube = new Cube();
 sceneManager.scene.add(cube.mesh);
+
+
+//! Nubes Ring
+let cloudModel = null; // ⬅️ Declaración necesaria
+
+
+loadGLTFClouds(sceneManager.scene, (clouds) => {
+  cloudModel = clouds; // fuera de cualquier función (para animar)
+  console.log("Nubes cargadas:", clouds);
+});
+
 
 
 // Instanciar sistema multijugador (maneja personaje local y remotos)
@@ -46,8 +60,21 @@ multiplayer.spawnLocalPlayer((controller, personaje) => {
   });
 
   console.log("✅ Personaje y controller listos", controller, personaje);
-
 });
+
+
+
+//! ====== ANIMACIONES ========
+
+function animate () {
+  requestAnimationFrame(animate);
+
+  controls.update();
+  if (cloudModel?.tick) cloudModel.tick();
+  sceneManager.renderer.render(sceneManager.scene, sceneManager.camera);
+}
+animate();
+
 
 // Enviar actualizaciones periódicas al servidor
 setInterval(() => {

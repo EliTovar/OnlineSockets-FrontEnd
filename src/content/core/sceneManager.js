@@ -47,11 +47,7 @@ export class SceneManager {
       antialias: true
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-
-    //! Agrega una grilla al piso
-    const gridHelper = new THREE.GridHelper(50, 6);
-    gridHelper.position.set(0, 0.01, 0);
-    this.scene.add(gridHelper);
+    
 
     //* Preparar actualización
     this.updateCallback = null;

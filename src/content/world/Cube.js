@@ -2,11 +2,15 @@ import * as THREE from 'three';
 
 export class Cube {
   constructor() {
-    const geometry = new THREE.BoxGeometry(50, 100, 50);
+    const geometry = new THREE.BoxGeometry(70, 140, 70);
     const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
     this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.position.set(0, -50, 0);
-    // Posiciona el cubo para que su base esté alineada con el gridHelper (Y=0)
+    this.mesh.position.set(0, -70, 0);
+    
+    //! Agrega una grilla al piso
+        const gridHelper = new THREE.GridHelper(70, 7);
+        gridHelper.position.set(0, 70, 0);
+        this.mesh.add(gridHelper);
     
   }
 
