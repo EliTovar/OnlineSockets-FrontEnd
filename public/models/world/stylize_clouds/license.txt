@@ -1,0 +1,11 @@
+Model Information:
+* title:	stylize clouds
+* source:	https://sketchfab.com/3d-models/stylize-clouds-32ed464f19fe4acf86723eaff08dd568
+* author:	ragad.sallabi (https://sketchfab.com/ragad.sallabi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "stylize clouds" (https://sketchfab.com/3d-models/stylize-clouds-32ed464f19fe4acf86723eaff08dd568) by ragad.sallabi (https://sketchfab.com/ragad.sallabi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
