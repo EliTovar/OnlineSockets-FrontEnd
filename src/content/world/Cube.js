@@ -5,8 +5,9 @@ export class Cube {
     const geometry = new THREE.BoxGeometry(50, 70, 50);
     const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
     this.mesh = new THREE.Mesh(geometry, material);
-    // Posiciona el cubo para que su base esté alineada con el gridHelper (Y=0)
     this.mesh.position.set(0, -35, 0);
+    // Posiciona el cubo para que su base esté alineada con el gridHelper (Y=0)
+    
   }
 
   update() {

@@ -1,8 +1,8 @@
 // src/network/MultiplayerManager.js
 import { io } from 'socket.io-client';
 import * as THREE from 'three';
-import { loadFBXPersonaje } from '../models/personaje.js';
-import { CharacterController } from '../characters/CharacterController.js';
+import { loadFBXPersonaje } from './3rd_Character/character.js';
+import { CharacterController } from './3rd_Character/character-controls.js';
 
 export class MultiplayerManager {
   constructor(scene, camera, domElement) {

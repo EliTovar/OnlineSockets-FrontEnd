@@ -30,6 +30,15 @@ export class SceneManager {
 
     //! Crea la escena
     this.scene = new THREE.Scene();
+
+    //*Luz
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(5, 10, 7.5);
+    this.scene.add(directionalLight);
+
     this.scene.background = new THREE.Color(0xeeeeee); // gris claro
 
     //* Renderizador WebGL
@@ -77,4 +86,5 @@ export class SceneManager {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
+  
 }
