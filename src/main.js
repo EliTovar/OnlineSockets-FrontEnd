@@ -1,11 +1,9 @@
-
 import { SceneManager } from './content/core/sceneManager.js';
 import { OrbitControlManager } from './content/controls/OrbitControlManager.js';
 import { Cube } from './content/world/Cube.js';
 import { MultiplayerManager } from './MultiplayerManager.js';
 import { loadCubePosition } from '/public/models/shared/position-3d-model/cube';
 
-//Nuevas importaciones*
 import { loadGLTFClouds } from './content/world/cloudring.js';
 import { loadGLTFCloudComp } from './content/world/cloud-comp1.js';
 
@@ -16,28 +14,23 @@ sceneManager.init();
 // Controles de cámara
 const controls = new OrbitControlManager(sceneManager.camera, sceneManager.renderer.domElement);
 
-//! Cubo entorno (mapa)
+// Añadir cubo de entorno (mapa)
 const cube = new Cube();
 sceneManager.scene.add(cube.mesh);
 
-
-//! Nubes Ring
-let cloudModel = null; // ⬅️ Declaración necesaria
-
+// Cargar nubes principales
+let cloudModel = null;
 loadGLTFClouds(sceneManager.scene, (clouds) => {
-  cloudModel = clouds; // fuera de cualquier función (para animar)
+  cloudModel = clouds;
   console.log("Nubes cargadas:", clouds);
 });
 
-//! Nubes complementarias
-let cloudComp1 = null; // ⬅️ Declaración necesaria
+// Cargar nubes complementarias (descomenta si las necesitas)
+// loadGLTFCloudComp(sceneManager.scene, (clouds) => {
+//   console.log("Nubes complementarias cargadas:", clouds);
+// });
 
-loadGLTFCloudComp(sceneManager.scene, (clouds) => {
-  cloudComp1 = clouds; // fuera de cualquier función (para animar)
-  console.log("Nubes cargadas:", clouds);
-});
-
-// Instanciar sistema multijugador (maneja personaje local y remotos)
+// Instanciar sistema multijugador
 const multiplayer = new MultiplayerManager(
   sceneManager.scene,
   sceneManager.camera,
@@ -48,39 +41,32 @@ const multiplayer = new MultiplayerManager(
 multiplayer.spawnLocalPlayer((controller, personaje) => {
   let lastTime = performance.now();
 
-   // 🔴 Cubo seguidor
-  const { cube: followerCube, update: updateCube } = loadCubePosition(sceneManager.scene, personaje);
+  // Cubo seguidor del personaje
+  const { update: updateCube } = loadCubePosition(sceneManager.scene, personaje);
 
-
+  // Callback de actualización del render loop
   sceneManager.setUpdateCallback(() => {
     const currentTime = performance.now();
-    const deltaTime = (currentTime - lastTime) / 1000; // en segundos
+    const deltaTime = (currentTime - lastTime) / 1000;
     lastTime = currentTime;
 
     controls.update();
     multiplayer.update(deltaTime);
-    multiplayer.sendUpdates();
+    updateCube();
+    if (cloudModel?.tick) cloudModel.tick();
 
-    updateCube(); // ✅ actualizar posición del cubo seguidor
-
+    sceneManager.renderer.render(sceneManager.scene, sceneManager.camera);
   });
 
   console.log("✅ Personaje y controller listos", controller, personaje);
 });
 
-
-
-//! ====== ANIMACIONES ========
-
-function animate () {
+// Iniciar bucle de animación
+function animate() {
   requestAnimationFrame(animate);
-
-  controls.update();
-  if (cloudModel?.tick) cloudModel.tick();
-  sceneManager.renderer.render(sceneManager.scene, sceneManager.camera);
+  sceneManager.update(); // Llama al callback registrado
 }
 animate();
-
 
 // Enviar actualizaciones periódicas al servidor
 setInterval(() => {

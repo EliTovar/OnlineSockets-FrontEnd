@@ -29,8 +29,9 @@ export function loadGLTFClouds(scene, onLoad = () => {}) {
         gltf.scene.scale.set(20, 20, 20); //Se hace pequeño o alto para que no sea gigante o enano.
         gltf.scene.position.set(0, -130, 0); //Lo colocamos un poco más arriba para que no se entierre en el suelo.
 
+        let count = 0;
       gltf.scene.traverse((child) => {
-        if (child.isMesh) {
+        if (child.isMesh) { count ++;
           if (Array.isArray(child.material)) {
             child.material.forEach(mat => {
               mat.map = baseColorTexture;
@@ -46,6 +47,7 @@ export function loadGLTFClouds(scene, onLoad = () => {}) {
           }
         }
       });
+      console.log('numero de meshes en el modelo:', count);
 
       //!Asignar animación
       cloudModel.tick = () => {

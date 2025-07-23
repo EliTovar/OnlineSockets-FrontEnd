@@ -6,7 +6,7 @@ export class SceneManager {
     const canvas = document.getElementById('experience-canvas'); // Usa el canvas existente
 
     //! Crea la cámara
-    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 5, 1000);
 
     
 
@@ -76,11 +76,18 @@ export class SceneManager {
     this.updateCallback = callback;
   }
 
+  //Para llamar a sceneManager y se ejutara en el Callback
+  update() {
+  if (this.updateCallback) {
+    this.updateCallback();
+  }
+}
+
+
   //* Ajuste de cámara y renderer al redimensionar
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
-  
 }
