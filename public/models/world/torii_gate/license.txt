@@ -1,0 +1,11 @@
+Model Information:
+* title:	Japanese Torii gate Game Asset
+* source:	https://sketchfab.com/3d-models/japanese-torii-gate-game-asset-e12d2fa1b2b94928b8b87cb7787e2462
+* author:	Bazylonator (https://sketchfab.com/Bazylonator)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Japanese Torii gate Game Asset" (https://sketchfab.com/3d-models/japanese-torii-gate-game-asset-e12d2fa1b2b94928b8b87cb7787e2462) by Bazylonator (https://sketchfab.com/Bazylonator) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

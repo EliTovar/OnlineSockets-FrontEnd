@@ -1,5 +1,5 @@
 import  * as THREE from 'three';
-
+//! ==== OUTDATED ======
 export class CharacterController {
     constructor(personaje, animations, domElement, isLocal = false) {// Se recibe el Modelo 3D, las Animaciones y elemento HTML donde va el canvas (no se usa, pero podria usarse para controles en el futuro).
         this.isLocal = isLocal;

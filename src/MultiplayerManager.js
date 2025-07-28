@@ -2,7 +2,7 @@
 import { io } from 'socket.io-client';
 import * as THREE from 'three';
 import { loadFBXPersonaje } from './3rd_Character/character.js';
-import { CharacterController } from './3rd_Character/character-controls.js';
+import { CharacterController } from './content/controls/character-control.js';
 
 export class MultiplayerManager {
   constructor(scene, camera, domElement) {

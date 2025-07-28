@@ -9,7 +9,7 @@ export class CharacterController {
         //Move
         this.velocity = new THREE.Vector3(); //Punto o dirección en el plano 3D.
         this.direction = new THREE.Vector3(); //Punto o dirección en el plano 3D.
-        this.speed = 0.05; //Que tan rapido camina el personaje.
+        this.speed = 0.20; //Que tan rapido camina el personaje.
         this.keys = { //Guarda si las teclas están presionadas por defecto.
             w: false, //'true' = comienza a caminar, despues depresionar w, se detiene.
             a: false,

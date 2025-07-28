@@ -6,7 +6,7 @@ export class SceneManager {
     const canvas = document.getElementById('experience-canvas'); // Usa el canvas existente
 
     //! Crea la cámara
-    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 5, 1000);
+    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     
 
@@ -40,7 +40,7 @@ export class SceneManager {
     this.scene.add(directionalLight);
 
     this.scene.background = new THREE.Color(0xeeeeee); // gris claro
-
+// 0x000000
     //* Renderizador WebGL
     this.renderer = new THREE.WebGLRenderer({
       canvas,
