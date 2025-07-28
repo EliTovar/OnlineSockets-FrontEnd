@@ -14,7 +14,8 @@ export class CharacterController {
             w: false, //'true' = comienza a caminar, despues depresionar w, se detiene.
             a: false,
             s: false,
-            d: false
+            d: false,
+            space: false
         }
 
         //! Animations ------------------------------------------>--->--->-------------------------------------------------------------
@@ -26,7 +27,12 @@ export class CharacterController {
         this._initListeners(); //Escucha las teclas.
     }
 
-    
+    //* Propiedades de salto:
+    isJumping = false;        // Controla si está en el aire
+    jumpVelocity = 0;         // Velocidad vertical
+    gravity = -0.02;          // Simula la gravedad
+    jumpForce = 0.30;         // Qué tan alto brinca
+
 
 
     _initAnimations(animations) { //! Prepara y activa las animaciones ------------------------------------------>--->
@@ -60,16 +66,32 @@ export class CharacterController {
         if (key in this.keys) {
             this.keys[key] = isPressed; //Guarda en this.keys si una tecla (WASD) está presionada.
         }
-    }
+        // Inicia el salto si se presionó espacio y no está saltando
+        if (key === ' ' && isPressed && !this.isJumping) {
+            this.jump();
+            }
+        }
 
         _changeAnimations(name) { //! Cambia las animaciones  ------------------------------------------>--->
     if (this.currentActions === this.actions[name]) return;
 
     const nextAction = this.actions[name];
     if (!nextAction) return;
+    
 
     this.currentActions?.fadeOut(0.3);
-    nextAction.reset().fadeIn(0.3).play();
+    // nextAction.reset().fadeIn(0.3).play();
+
+    //Para que se reprodusca una sola vez la animación de salto
+    nextAction.reset().fadeIn(0.3);
+
+    if (name === 'jump') {
+        nextAction.setLoop(THREE.LoopOnce);
+        nextAction.clampWhenFinished = true;
+    }
+    nextAction.play();
+    //
+
     this.currentActions = nextAction;
 
     // ✅ Emitir la animación actual al servidor
@@ -98,15 +120,18 @@ export class CharacterController {
     }
     }
 
+    jump() {
+    if (this.isJumping) return;
+    this.isJumping = true;
+    this.jumpVelocity = this.jumpForce;
+    this._changeAnimations('jump'); // Asegúrate de que tengas la animación "jump"
+    }
+
+
     update(deltaTime) { //! Se llama para actualizar movimiento y animación  ------------------------------------------>
         if (!this.personaje || !this.mixer) return;
 
         this.mixer.update(deltaTime);
-
-        // if(this.isLocal) {
-        //     //Solo el jugador local usa WASD, mueve el modelo y rota la cámara.
-        //     this.processinput(deltaTime);
-        // }
 
         if (this.keys.w) { //Condición para cambviar de velocidad de animación.
             this._speedAnimation('back', 2.0);
@@ -131,19 +156,39 @@ export class CharacterController {
         const goback = this.keys.s;
 
         //Cambiar animación según
-        //Adelante
-        if(moving) {
-            this._changeAnimations('walk');
-         } else if(goback) {
-            this._changeAnimations('back');
-         } else {
-            this._changeAnimations('idle');
+        if (!this.isJumping) {
+            if (moving) {
+                this._changeAnimations('walk');
+            } else if (goback) {
+                this._changeAnimations('back');
+            } else {
+                this._changeAnimations('idle');
+            }
         }
+
         
         //Movimiento hacia adelante o atrás
         let directionMultiplier = 0;
         if(this.keys.w) directionMultiplier = 1;
         if(this.keys.s) directionMultiplier = -1;
+
+        // Movimiento vertical (salto y gravedad)
+        if (this.isJumping) {
+            this.personaje.position.y += this.jumpVelocity;
+            this.jumpVelocity += this.gravity;
+
+            // Si toca el suelo (simplificado, podrías usar colisión real)
+            if (this.personaje.position.y <= 0) {
+                this.personaje.position.y = 0;
+                this.jumpVelocity = 0;
+                this.isJumping = false;
+
+                // Volver a animación idle o walk según esté caminando
+                const isWalking = this.keys.w;
+                this._changeAnimations(isWalking ? 'walk' : 'idle');
+            }
+        }
+
 
         if (directionMultiplier !== 0) {
         const forward = new THREE.Vector3(0, 0, 1);

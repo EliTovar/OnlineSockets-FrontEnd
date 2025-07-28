@@ -23,7 +23,9 @@ export function loadFBXPersonaje(scene, onLoad = () => {}) { //* 'scene': Lugar 
         const animationPaths = {
         idle: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Happy Idle.fbx',
         walk: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Happy Walk.fbx',
-        back: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Walk Backwards.fbx'
+        back: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Walk Backwards.fbx',
+        jump: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Jumping.fbx',
+        jumpUp: import.meta.env.BASE_URL + 'models/character-3/animations/cat-Re-animations/Jumping Up.fbx',
 
             // startwalk: '/models/character-3/animations/cat-Re-animations/Female Stop Walking.fbx',
             // endwalk: '/models/character-3/animations/cat-Re-animations/Female Start Walking.fbx'

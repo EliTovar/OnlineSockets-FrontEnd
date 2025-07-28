@@ -28,12 +28,10 @@ sceneManager.scene.add(cube.mesh);
 let cloudModel = null;
 loadGLTFClouds(sceneManager.scene, (clouds) => {
   cloudModel = clouds;
-  console.log("Nubes cargadas:", clouds);
 });
 
 //! Japanese Torii gate
 loadGLTFToriiGate(sceneManager.scene, (toriiGate) => {
-  console.log("📌 Modelo Torii agregado a la escena:", toriiGate);
 });
 
 //! Publish BMG
