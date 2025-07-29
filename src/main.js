@@ -71,7 +71,7 @@ sceneManager.setUpdateCallback(() => {
   controls.update();
   multiplayer.update(deltaTime);
   updateCube();
-  if (cloudModel?.tick) cloudModel.tick(deltaTime);
+  // if (cloudModel?.tick) cloudModel.tick(deltaTime);
   if (waterSphere?.tick) waterSphere.tick(deltaTime);
 
   sendTimer += deltaTime;
