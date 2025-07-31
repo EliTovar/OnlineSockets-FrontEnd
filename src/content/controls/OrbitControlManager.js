@@ -5,7 +5,12 @@ export class OrbitControlManager extends OrbitControls {
     super(camera, domElement);
     this.enableDamping = true;
     this.dampingFactor = 0.05;
-  }
 
-  // Si quieres, puedes agregar métodos extra aquí
+    // Esto bloquea que OrbitControls gire si está deshabilitado
+    this.domElement.addEventListener('pointerdown', (e) => {
+      if (!this.enabled) {
+        e.stopImmediatePropagation();
+      }
+    }, true);
+  }
 }

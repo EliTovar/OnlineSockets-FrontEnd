@@ -1,24 +1,24 @@
-// content/world/DraggableObjects.js
+// content/world/test/DraggableObjects.js
 import * as THREE from 'three';
-
 
 export function initDraggableObjects(scene, camera, controls) {
   const raycaster = new THREE.Raycaster();
   const clickMouse = new THREE.Vector2();
   const moveMouse = new THREE.Vector2();
+
   let isDragging = false;
   let selected = null;
-  let controlsWasEnabled = true; // ✅ ¡Aquí se declara correctamente!
+  let controlsWasEnabled = true;
 
-
+  // === Crear objetos ===
   function createFloor() {
     const pos = { x: 0, y: -1, z: 0 };
     const scale = { x: 70, y: 2, z: 70 };
     const floor = new THREE.Mesh(
       new THREE.BoxGeometry(),
       new THREE.MeshPhongMaterial({
-        visible: false, 
-        color: 0xf9c834 
+        visible: false,
+        color: 0xf9c834
       })
     );
     floor.position.set(pos.x, pos.y, pos.z);
@@ -76,52 +76,64 @@ export function initDraggableObjects(scene, camera, controls) {
     scene.add(cylinder);
   }
 
+  // === Listeners ===
 
-  // === Event Listeners ===
-window.addEventListener('mousedown', (event) => {
-  clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  // PointerDown: iniciar arrastre
+  window.addEventListener('pointerdown', (event) => {
+    clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-  raycaster.setFromCamera(clickMouse, camera);
-  const intersects = raycaster.intersectObjects(scene.children, true);
-  if (intersects.length > 0) {
-    const object = intersects[0].object;
-    if (object.userData.draggable) {
-      isDragging = true;
-      selected = object;
-      controlsWasEnabled = controls.enabled;
-      controls.enabled = false;
+    raycaster.setFromCamera(clickMouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+      const object = intersects[0].object;
+      if (object.userData.draggable) {
+        isDragging = true;
+        selected = object;
+        controlsWasEnabled = controls.enabled;
+        controls.enabled = false;
 
-      // Previene que OrbitControls capture el pointerdown
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
+  }, true); // fase de captura
+
+  // PointerUp: soltar objeto
+  window.addEventListener('pointerup', (event) => {
+    if (isDragging) {
+      isDragging = false;
+      selected = null;
+      controls.enabled = controlsWasEnabled;
+
+      event.preventDefault();
       event.stopPropagation();
     }
-  }
-});
+  }, true);
 
-window.addEventListener('mouseup', () => {
-  if (isDragging) {
-    isDragging = false;
-    selected = null;
-    controls.enabled = controlsWasEnabled;
-  }
-});
+  // PointerMove: actualizar coordenadas del mouse
+  window.addEventListener('pointermove', (event) => {
+    moveMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    moveMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+    if (isDragging) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
 
+  // Click (solo para depurar)
   window.addEventListener('click', (event) => {
     clickMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     clickMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     raycaster.setFromCamera(clickMouse, camera);
     const found = raycaster.intersectObjects(scene.children, true);
     if (found.length > 0 && found[0].object.userData.draggable) {
-      console.log(`Found draggable: ${found[0].object.userData.name}`);
+      console.log(`✅ Clicked on: ${found[0].object.userData.name}`);
     }
   });
 
-  window.addEventListener('mousemove', (event) => {
-    moveMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    moveMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  });
-
+  // Función llamada en cada frame
   function dragObject() {
     if (!isDragging || !selected) return;
     raycaster.setFromCamera(moveMouse, camera);
@@ -135,12 +147,13 @@ window.addEventListener('mouseup', () => {
     }
   }
 
-  // Inicializar objetos
+  // Crear los objetos
   createFloor();
   createBox();
   createSphere();
   createCylinder();
 
+  // Exporta función de actualización
   return {
     tick: dragObject
   };
