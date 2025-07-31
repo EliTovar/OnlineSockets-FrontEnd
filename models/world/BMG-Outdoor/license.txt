@@ -1,0 +1,11 @@
+Model Information:
+* title:	BMG - Outdoor
+* source:	https://sketchfab.com/3d-models/bmg-outdoor-eb1b72fb08a54450ab336437b9b7ae76
+* author:	Eiffel Estruturas Metálicas (https://sketchfab.com/EiffelEstruturas)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "BMG - Outdoor" (https://sketchfab.com/3d-models/bmg-outdoor-eb1b72fb08a54450ab336437b9b7ae76) by Eiffel Estruturas Metálicas (https://sketchfab.com/EiffelEstruturas) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
