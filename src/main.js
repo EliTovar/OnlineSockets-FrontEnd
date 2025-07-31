@@ -11,6 +11,8 @@ import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
 // import { loadGLTFCloudComp } from './content/world/cloud-comp1.js';
 
 import { addSphereWithWaves } from './content/world/test/sphere_with_waves.js';
+import { initDraggableObjects } from './content/world/test/DraggableObjects.js';
+
 
 
 // Crear escena, cámara y renderer
@@ -25,10 +27,10 @@ const cube = new Cube();
 sceneManager.scene.add(cube.mesh);
 
 //! Nubes Ring
-let cloudModel = null;
-loadGLTFClouds(sceneManager.scene, (clouds) => {
-  cloudModel = clouds;
-});
+// let cloudModel = null;
+// loadGLTFClouds(sceneManager.scene, (clouds) => {
+//   cloudModel = clouds;
+// });
 
 //! Japanese Torii gate
 loadGLTFToriiGate(sceneManager.scene, (toriiGate) => {
@@ -44,6 +46,9 @@ loadGLTFToriiGate(sceneManager.scene, (toriiGate) => {
 
 //! Esfera con olas
 const waterSphere = addSphereWithWaves(sceneManager.scene, sceneManager.camera, sceneManager.renderer);
+
+//! Draggable Objects (raycaster)
+const draggableSystem = initDraggableObjects(sceneManager.scene, sceneManager.camera, controls);
 
 
 // Instanciar sistema multijugador
@@ -67,6 +72,8 @@ sceneManager.setUpdateCallback(() => {
   const currentTime = performance.now();
   const deltaTime = (currentTime - lastTime) / 1000;
   lastTime = currentTime;
+
+  if (draggableSystem?.tick) draggableSystem.tick();
 
   controls.update();
   multiplayer.update(deltaTime);
