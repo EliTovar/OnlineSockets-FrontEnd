@@ -62,7 +62,7 @@ export class CharacterController {
     
     //Cada vez que presionas o sueltas una tecla, llama a:
     _onKeyChange(event, isPressed) { //! Revisa qué tecla se presionó o soltó ------------------------------------------>--->
-        const key = event.key.toLowerCase();
+        const key = (event.key || '').toLowerCase();
         if (key in this.keys) {
             this.keys[key] = isPressed; //Guarda en this.keys si una tecla (WASD) está presionada.
         }

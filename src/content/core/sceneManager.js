@@ -1,90 +1,62 @@
-import { OrbitControlManager } from '../controls/OrbitControlManager.js';
 import * as THREE from 'three';
+import { OrbitControlManager } from '../controls/OrbitControlManager.js';
 
 export class SceneManager {
   constructor() {
-    const canvas = document.getElementById('experience-canvas'); // Usa el canvas existente
+    const canvas = document.getElementById('experience-canvas');
 
-    //! Crea la cámara
+    // Cámara
     this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-    
-
-    // Posicionamiento inicial con ángulo
-    const angle = THREE.MathUtils.degToRad(50); // 20 grados en radianes
+    const angle = THREE.MathUtils.degToRad(50);
     const radius = 130;
-
     this.camera.position.set(
       Math.sin(angle) * radius,
       Math.cos(angle) * radius,
       20
     );
-    this.camera.lookAt(0, -5, 0); // Mira hacia abajo
+    this.camera.lookAt(0, -5, 0);
 
-    //! OrbitControls
+    // OrbitControls
     this.controls = new OrbitControlManager(this.camera, canvas);
     this.controls.target.set(0, 0, 0);
     this.controls.update();
 
-    this.camera.position.z = 0;
-
-    //! Crea la escena
+    // Escena
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xeeeeee);
 
-    //*Luz
+    // Luces
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-    this.scene.add(ambientLight);
-
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     directionalLight.position.set(5, 10, 7.5);
-    this.scene.add(directionalLight);
+    this.scene.add(ambientLight, directionalLight);
 
-    this.scene.background = new THREE.Color(0xeeeeee); // gris claro
-// 0x000000
-    //* Renderizador WebGL
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true
-    });
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    
 
-    //* Preparar actualización
     this.updateCallback = null;
-
-    //* Evento de redimensionamiento
     window.addEventListener('resize', () => this.onWindowResize());
   }
 
-
-  //! ===== METODOS de la Clase =====
-
-  //* Inicia el bucle de animación
   init() {
     this.renderer.setAnimationLoop(this.animate.bind(this));
   }
 
-  //* Lógica de animación
   animate() {
     if (this.updateCallback) this.updateCallback();
-    this.controls.update(); // ← si quieres que el damping se aplique en cada frame
+    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
 
-  //* Registrar una función que se ejecuta cada frame
   setUpdateCallback(callback) {
     this.updateCallback = callback;
   }
 
-  //Para llamar a sceneManager y se ejutara en el Callback
   update() {
-  if (this.updateCallback) {
-    this.updateCallback();
+    if (this.updateCallback) this.updateCallback();
   }
-}
 
-
-  //* Ajuste de cámara y renderer al redimensionar
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
