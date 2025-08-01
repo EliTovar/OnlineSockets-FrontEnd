@@ -19,14 +19,56 @@
     <div class="experience">
       <canvas id="experience-canvas" class="experience-canvas"></canvas>
       <div id="texto-sobrepuesto">
-        <div id="keysText" class=" w-38 transition-all duration-500 overflow-hidden">
-            <p class="text-sm font-bold flex text-black">Press <kbd class="kbd kbd-sm text-black">W</kbd> to walk.</p>
-            <p class="text-sm font-bold flex text-black">Press <kbd class="kbd kbd-sm text-black">S</kbd> Sto backward.</p>
-            <p class="text-sm font-bold flex text-black">Press <kbd class="kbd kbd-sm text-black">A</kbd> to go left.</p>
-            <p class="text-sm font-bold flex text-black">Press <kbd class="kbd kbd-sm text-black">D</kbd> to go right.</p>
-            <p class="text-sm font-bold flex text-black">Press <kbd class="kbd kbd-sm text-black">SPACE</kbd> to jump.</p>
-    </div>
-</div>
+        <!-- Botón de toggle -->
+      <button id="toggleKeysBtn" class="fixed top-4 right-4 p-2 bg-white rounded-full shadow-md z-50">
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </button>
+
+      <!-- Caja de instrucciones -->
+      <div id="keysText" class="fixed top-16 right-4 bg-white p-4 rounded-md shadow-lg w-56 transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden pointer-events-none z-40">
+        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">W</kbd> to walk</p>
+        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">S</kbd> to backward</p>
+        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">A</kbd> to go left</p>
+        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">D</kbd> to go right</p>
+        <p class="text-sm text-black"><kbd class="kbd kbd-sm text-black">SPACE</kbd> to jump</p>
+      </div>
+
+      <script>
+        const toggleBtn = document.getElementById('toggleKeysBtn');
+        const keysText = document.getElementById('keysText');
+
+        toggleBtn.addEventListener('click', () => {
+          keysText.classList.toggle('opacity-0');
+          keysText.classList.toggle('max-h-0');
+          keysText.classList.toggle('pointer-events-none');
+        });
+      </script>
+
+
+          <!-- CONTROLES MÓVIL -->
+        <div id="touch-controls" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 sm:hidden opacity-50">
+          <!-- Flechas -->
+          <div class="flex gap-4">
+            <button id="btn-up"><kbd class="kbd kbd-md text-black">↑</kbd></button>
+          </div>
+          <div class="flex gap-4">
+            <button id="btn-left"><kbd class="kbd kbd-md text-black">←</kbd></button>
+            <button id="btn-down"><kbd class="kbd kbd-md text-black">↓</kbd></button>
+            <button id="btn-right"><kbd class="kbd kbd-md text-black">→</kbd></button>
+          </div>
+          <!-- Botón de salto -->
+          <div class="mt-2">
+            <button id="btn-jump" class="jump-btn"><kbd class="kbd kbd-md text-black">JUMP!</kbd></button>
+
+          </div>
+        </div>
+
+
+        </div>
+      </div>
         </div>
         <!-- <script type="module" src="/src/content/world/Torii-gate.js"></script> -->
     <script type="module" src="/src/main.js"></script>

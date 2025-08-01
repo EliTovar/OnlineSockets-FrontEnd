@@ -4,10 +4,12 @@ import { OrbitControlManager } from './content/controls/OrbitControlManager.js';
 import { Cube } from './content/world/Cube.js';
 import { MultiplayerManager } from './MultiplayerManager.js';
 import { loadCubePosition } from '/public/models/shared/position-3d-model/cube';
+import { setupTouchControls } from './content/ui/controlsPhone/mobileControls.js';
 
-import { loadGLTFClouds } from './content/world/cloudring.js';
+
 import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
-// import { loadGLTFBMG } from './content/world/BMG-Outdoor.js';
+
+// import { loadGLTFClouds } from './content/world/cloudring.js';
 // import { loadGLTFCloudComp } from './content/world/cloud-comp1.js';
 
 import { addSphereWithWaves } from './content/world/test/sphere_with_waves.js';
@@ -59,7 +61,12 @@ const multiplayer = new MultiplayerManager(
 );
 
 // Esperar a que se cargue el personaje local
-multiplayer.spawnLocalPlayer((controller, personaje) => {
+multiplayer.spawnLocalPlayer(async (controller, personaje) => {
+
+  setupTouchControls(controller);    // ⬅ Conecta botones
+
+
+
   let lastTime = performance.now();
 
   // Cubo seguidor del personaje
