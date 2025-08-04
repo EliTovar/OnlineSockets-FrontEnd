@@ -168,9 +168,11 @@ export class MultiplayerManager {
       }
 
       // Actualizar posición de la etiqueta de chat del jugador remoto, si existe
-      if (remote.chatLabel && remote.personaje) {
-        remote.chatLabel.position.copy(remote.personaje.position).add(new THREE.Vector3(0, 6, 0));
+      if (this.chatLabel) {
+        const offset = new THREE.Vector3(0, 6, 0);
+        this.chatLabel.position.copy(this.model.position).add(offset);
       }
+
     }
   }
 }

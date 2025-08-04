@@ -10,36 +10,51 @@ export function setupChatLabelInput(inputElementId, scene, getLocalCharacter, mu
       const localCharacter = getLocalCharacter();
       if (!localCharacter) return;
 
-      // 🧼 Limpiar etiqueta anterior si existe
-      if (labelRef.label) {
-        scene.remove(labelRef.label);
+      // Si había un timeout para borrar la burbuja anterior, limpiarlo para evitar borrar la nueva
+      if (labelRef.timeoutId) {
+        clearTimeout(labelRef.timeoutId);
+        labelRef.timeoutId = null;
       }
 
-      // 🟢 Crear nueva etiqueta
+      // 🧼 Eliminar burbuja anterior con animación
+      if (labelRef.label) {
+        labelRef.label.element.classList.add('fade-out');
+        setTimeout(() => {
+          scene.remove(labelRef.label);
+          labelRef.label = null;
+        }, 500);
+      }
+
+      // 🟢 Crear nueva burbuja
       const pos = localCharacter.position.clone().add(new THREE.Vector3(0, 6, 0));
       const label = GraphicEtiquetas3d(texto, '', pos);
       scene.add(label);
 
-      // 🔁 Vincular etiqueta al personaje para seguimiento
+      // 🔁 Asociar la burbuja al personaje
       labelRef.label = label;
       localCharacter.chatLabel = label;
 
-      // ⏳ Eliminar después de 4 segundos
-      setTimeout(() => {
+      // ⏳ Auto eliminar con animación
+      labelRef.timeoutId = setTimeout(() => {
         if (labelRef.label === label) {
-          scene.remove(label);
-          labelRef.label = null;
-          localCharacter.chatLabel = null;
+          label.element.classList.add('fade-out');
+          setTimeout(() => {
+            scene.remove(label);
+            labelRef.label = null;
+            labelRef.timeoutId = null;
+            localCharacter.chatLabel = null;
+          }, 500);
         }
-      }, 6000);
+      }, 4000);
 
-      // 📡 Emitir mensaje al servidor
+      // 📡 Emitir al servidor
       if (multiplayer?.socket) {
         multiplayer.socket.emit('chat-message', { message: texto });
       }
 
-      // 🧽 Limpiar input
+      // 🧽 Limpiar input y deseleccionar
       input.value = '';
+      input.blur(); // 👈 esto quita el foco
     }
   });
 }
