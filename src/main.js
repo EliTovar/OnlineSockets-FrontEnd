@@ -8,7 +8,7 @@ import { loadCubePosition } from '/public/models/shared/position-3d-model/cube';
 import { setupTouchControls } from './content/ui/controlsPhone/mobileControls.js';
 
 import { createLabelRenderer, GraphicEtiquetas3d } from './content/ui/chat/etiquetaChat.js';
-
+import { setupChatLabelInput } from './content/ui/chat/chat.js';
 
 import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
 // import { loadGLTFClouds } from './content/world/cloudring.js';
@@ -29,24 +29,17 @@ sceneManager.init();
 // Controles de cámara
 const controls = new OrbitControlManager(sceneManager.camera, sceneManager.renderer.domElement);
 
-// Agrega etiqueta al presionar Enter
-const input = document.getElementById('chatInput');
-input.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && input.value.trim() !== '') {
-    const texto = input.value.trim();
+// Agrega etiqueta al presionar Enter 1
+const labelRender = createLabelRenderer();
+document.body.appendChild(labelRender.domElement);
 
-    if (localCharacter && localCharacter) {
-      const pos = localCharacter.position.clone().add(new THREE.Vector3(0, 6, 0));
-
-      if (chatLabel) sceneManager.scene.remove(chatLabel);
-
-      chatLabel = GraphicEtiquetas3d(texto, '', pos);
-      sceneManager.scene.add(chatLabel);
-
-      input.value = '';
-    }
-  }
-});
+// Configurar input del chat (de forma modular) 2
+setupChatLabelInput(
+  'chatInput',
+  sceneManager.scene,
+  () => localCharacter,
+  () => ({value: chatLabel, set value(val) {chatLabel = val;} })
+);
 
 
 
