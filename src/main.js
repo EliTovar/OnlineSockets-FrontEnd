@@ -33,13 +33,22 @@ const controls = new OrbitControlManager(sceneManager.camera, sceneManager.rende
 const labelRender = createLabelRenderer();
 document.body.appendChild(labelRender.domElement);
 
-// Configurar input del chat (de forma modular) 2
+// Instanciar sistema multijugador
+const multiplayer = new MultiplayerManager(
+  sceneManager.scene,
+  sceneManager.camera,
+  sceneManager.renderer.domElement
+);
+
+// Ahora sí, configurar el input del chat, pasando multiplayer
 setupChatLabelInput(
   'chatInput',
   sceneManager.scene,
   () => localCharacter,
-  () => ({value: chatLabel, set value(val) {chatLabel = val;} })
+  () => ({value: chatLabel, set value(val) {chatLabel = val;} }),
+  multiplayer
 );
+
 
 
 
@@ -67,12 +76,12 @@ const waterSphere = addSphereWithWaves(sceneManager.scene, sceneManager.camera, 
 const draggableSystem = initDraggableObjects(sceneManager.scene, sceneManager.camera, controls);
 
 
-// Instanciar sistema multijugador
-const multiplayer = new MultiplayerManager(
-  sceneManager.scene,
-  sceneManager.camera,
-  sceneManager.renderer.domElement
-);
+// // Instanciar sistema multijugador
+// const multiplayer = new MultiplayerManager(
+//   sceneManager.scene,
+//   sceneManager.camera,
+//   sceneManager.renderer.domElement
+// );
 
 // Esperar a que se cargue el personaje local
 multiplayer.spawnLocalPlayer(async (controller, personaje) => {

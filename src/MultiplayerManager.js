@@ -3,6 +3,8 @@ import { io } from 'socket.io-client';
 import * as THREE from 'three';
 import { loadFBXPersonaje } from './content/models-characters/character.js';
 import { CharacterController } from './content/controls/character-control.js';
+import { GraphicEtiquetas3d } from './content/ui/chat/etiquetaChat.js';
+
 
 export class MultiplayerManager {
   constructor(scene, camera, domElement) {
@@ -37,15 +39,19 @@ export class MultiplayerManager {
     });
 
     this.socket.on('chat-message', (data) => {
+    console.log('📩 Mensaje recibido:', data);
     const id = data.id;
     const message = data.message;
 
     if (id === this.socket.id) {
-      // Mensaje local ya manejado en setupChatLabelInput
+    // No actualizar para el jugador local (ya tiene su propio label)
       return;
     }
     const remote = this.remotePlayers[id];
-    if (!remote) return;
+    if (!remote) {
+      console.warn(`Mensaje de chat recibido para jugador remoto no encontrado: ${id}`);
+    return;
+  }
 
     // Si ya tiene etiqueta, actualizar texto, si no crear una
     if (remote.chatLabel) {
