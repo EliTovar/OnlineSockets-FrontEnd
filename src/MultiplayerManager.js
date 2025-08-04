@@ -36,6 +36,27 @@ export class MultiplayerManager {
       }
     });
 
+    this.socket.on('chat-message', (data) => {
+    const id = data.id;
+    const message = data.message;
+
+    if (id === this.socket.id) {
+      // Mensaje local ya manejado en setupChatLabelInput
+      return;
+    }
+    const remote = this.remotePlayers[id];
+    if (!remote) return;
+
+    // Si ya tiene etiqueta, actualizar texto, si no crear una
+    if (remote.chatLabel) {
+      remote.chatLabel.element.textContent = message;
+    } else {
+      // Crear nuevo label para ese jugador remoto
+      remote.chatLabel = GraphicEtiquetas3d(message, '', remote.personaje.position.clone().add(new THREE.Vector3(0, 6, 0)));
+      this.scene.add(remote.chatLabel);
+    }
+  });
+
     this.socket.on('player-joined', (data) => {
       this.addRemotePlayer(data.id, data);
     });
@@ -83,6 +104,9 @@ export class MultiplayerManager {
   removeRemotePlayer(id) {
     const remote = this.remotePlayers[id];
     if (remote) {
+      if (remote.chatLabel) {
+        this.scene.remove(remote.chatLabel);
+      }
       this.scene.remove(remote.personaje);
       delete this.remotePlayers[id];
     }
@@ -144,6 +168,11 @@ export class MultiplayerManager {
 
       if (typeof remote.targetRotationY === 'number') {
         remote.personaje.rotation.y += (remote.targetRotationY - remote.personaje.rotation.y) * 0.1;
+      }
+
+      // Actualizar posición de la etiqueta de chat del jugador remoto, si existe
+      if (remote.chatLabel) {
+        remote.chatLabel.position.copy(remote.personaje.position).add(new THREE.Vector3(0, 6, 0));
       }
     }
   }
