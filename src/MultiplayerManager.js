@@ -40,19 +40,19 @@ export class MultiplayerManager {
     });
 
     this.socket.on('chat-message', ({ id, message }) => {
-      if (!this.remotePlayers[id]) return;
+  if (!this.remotePlayers[id]) return;
 
-      const remoteCharacter = this.remotePlayers[id].character;
-      if (!remoteCharacter) return;
+  const remoteCharacter = this.remotePlayers[id].personaje; // <-- debería ser "personaje", no "character"
+  if (!remoteCharacter) return;
 
-      if (this.remotePlayers[id].label) {
-        scene.remove(this.remotePlayers[id].label);
-      }
+  if (this.remotePlayers[id].chatLabel) {
+    this.scene.remove(this.remotePlayers[id].chatLabel);
+  }
 
-      const label = GraphicEtiquetas3d(message, '', remoteCharacter.position.clone().add(new THREE.Vector3(0, 6, 0)));
-      scene.add(label);
-      this.remotePlayers[id].label = label;
-    });
+  const label = GraphicEtiquetas3d(message, '', remoteCharacter.position.clone().add(new THREE.Vector3(0, 6, 0)));
+  this.scene.add(label);
+  this.remotePlayers[id].chatLabel = label;
+});
 
 
     this.socket.on('player-joined', (data) => {
