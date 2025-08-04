@@ -11,8 +11,8 @@
 
     <!-- <link rel="stylesheet" href="/src/UI/key_indications.css"> -->
     
-    <script type="module" crossorigin src="/OnlineSockets-FrontEnd/assets/index-BduJGS2T.js"></script>
-    <link rel="stylesheet" crossorigin href="/OnlineSockets-FrontEnd/assets/index-DPuhiGPd.css">
+    <script type="module" crossorigin src="/OnlineSockets-FrontEnd/assets/index-B3yyA6Bp.js"></script>
+    <link rel="stylesheet" crossorigin href="/OnlineSockets-FrontEnd/assets/index-D71rzUB4.css">
   </head>
   <body>
     <div id="app"></div>
@@ -20,10 +20,12 @@
     <div class="experience">
       <canvas id="experience-canvas" class="experience-canvas"></canvas>
       <div id="texto-sobrepuesto">
-        <!-- Botón de toggle -->
+        <!--! Información de teclas -->
       <button id="toggleKeysBtn" class="fixed top-4 right-4 p-2 bg-white rounded-full shadow-md z-50">
 
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8" />
+        </svg>
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
       </button>
@@ -49,7 +51,7 @@
       </script>
 
 
-          <!-- CONTROLES MÓVIL -->
+          <!--! CONTROLES MÓVIL -->
         <div id="touch-controls" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 sm:hidden opacity-50">
           <!-- Flechas -->
           <div class="flex gap-4">
@@ -67,7 +69,9 @@
           </div>
         </div>
 
-
+          <!--! INPUT -->
+        <input type="text" id="chatInput" placeholder="Type here" class="input input-ghost" />
+        
         </div>
       </div>
         </div>
