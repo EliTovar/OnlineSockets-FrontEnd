@@ -14,14 +14,9 @@ export function GraphicEtiquetas3d(mensaje, clase = '', position = new THREE.Vec
   const div = document.createElement('div');
   div.className = `chat-bubble ${clase}`;
   div.textContent = mensaje;
-  div.style.padding = '5px 10px';
-  div.style.background = 'rgba(0,0,0,0.7)';
-  div.style.color = 'white';
-  div.style.borderRadius = '10px';
-  div.style.fontSize = '14px';
-  div.style.whiteSpace = 'nowrap';
 
   const label = new CSS2DObject(div);
   label.position.copy(position);
   return label;
 }
+

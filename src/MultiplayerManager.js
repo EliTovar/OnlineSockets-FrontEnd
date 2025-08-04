@@ -14,7 +14,6 @@ export class MultiplayerManager {
 
     this.socket = io(import.meta.env.PROD
       ? 'https://server-onlinesockets.onrender.com'
-      // : 'http://192.168.0.37:3000');
       : 'http://localhost:3000');
 
     this.remotePlayers = {};
@@ -169,7 +168,7 @@ export class MultiplayerManager {
       }
 
       // Actualizar posición de la etiqueta de chat del jugador remoto, si existe
-      if (remote.chatLabel) {
+      if (remote.chatLabel && remote.personaje) {
         remote.chatLabel.position.copy(remote.personaje.position).add(new THREE.Vector3(0, 6, 0));
       }
     }

@@ -16,10 +16,7 @@ import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
 import { addSphereWithWaves } from './content/world/test/sphere_with_waves.js';
 import { initDraggableObjects } from './content/world/test/DraggableObjects.js';
 
-const labelRenderer = createLabelRenderer();
-document.body.appendChild(labelRenderer.domElement);
-let chatLabel = null;
-let localCharacter = null;
+
 
 
 // Crear escena, cámara y renderer
@@ -30,8 +27,10 @@ sceneManager.init();
 const controls = new OrbitControlManager(sceneManager.camera, sceneManager.renderer.domElement);
 
 // Agrega etiqueta al presionar Enter 1
-const labelRender = createLabelRenderer();
-document.body.appendChild(labelRender.domElement);
+const labelRenderer = createLabelRenderer();
+document.body.appendChild(labelRenderer.domElement);
+let chatLabel = null;
+let localCharacter = null;
 
 // Instanciar sistema multijugador
 const multiplayer = new MultiplayerManager(
@@ -39,7 +38,6 @@ const multiplayer = new MultiplayerManager(
   sceneManager.camera,
   sceneManager.renderer.domElement
 );
-
 
 
 
@@ -67,12 +65,6 @@ const waterSphere = addSphereWithWaves(sceneManager.scene, sceneManager.camera, 
 const draggableSystem = initDraggableObjects(sceneManager.scene, sceneManager.camera, controls);
 
 
-// // Instanciar sistema multijugador
-// const multiplayer = new MultiplayerManager(
-//   sceneManager.scene,
-//   sceneManager.camera,
-//   sceneManager.renderer.domElement
-// );
 
 // Esperar a que se cargue el personaje local
 multiplayer.spawnLocalPlayer(async (controller, personaje) => {
@@ -82,13 +74,17 @@ multiplayer.spawnLocalPlayer(async (controller, personaje) => {
   setupTouchControls(controller);    // ⬅ Conecta botones
 
   // Ahora sí, configurar el input del chat, pasando multiplayer
+const localChatLabelRef = { label: null };
+
 setupChatLabelInput(
   'chatInput',
   sceneManager.scene,
   () => localCharacter,
-  () => ({value: chatLabel, set value(val) {chatLabel = val;} }),
-  multiplayer
+  multiplayer,
+  localChatLabelRef
 );
+
+
 
   let lastTime = performance.now();
   // Cubo seguidor del personaje
@@ -101,10 +97,9 @@ sceneManager.setUpdateCallback(() => {
   const deltaTime = (currentTime - lastTime) / 1000;
   lastTime = currentTime;
 
-  if (chatLabel && localCharacter) {
-    chatLabel.position.copy(localCharacter.position).add(new THREE.Vector3(0, 6, 0));
+  if (localCharacter?.chatLabel) {
+    localCharacter.chatLabel.position.copy(localCharacter.position).add(new THREE.Vector3(0, 6, 0));
   }
-
 
 
 
