@@ -40,15 +40,6 @@ const multiplayer = new MultiplayerManager(
   sceneManager.renderer.domElement
 );
 
-// Ahora sí, configurar el input del chat, pasando multiplayer
-setupChatLabelInput(
-  'chatInput',
-  sceneManager.scene,
-  () => localCharacter,
-  () => ({value: chatLabel, set value(val) {chatLabel = val;} }),
-  multiplayer
-);
-
 
 
 
@@ -90,12 +81,18 @@ multiplayer.spawnLocalPlayer(async (controller, personaje) => {
 
   setupTouchControls(controller);    // ⬅ Conecta botones
 
+  // Ahora sí, configurar el input del chat, pasando multiplayer
+setupChatLabelInput(
+  'chatInput',
+  sceneManager.scene,
+  () => localCharacter,
+  () => ({value: chatLabel, set value(val) {chatLabel = val;} }),
+  multiplayer
+);
 
   let lastTime = performance.now();
-
   // Cubo seguidor del personaje
   const { update: updateCube } = loadCubePosition(sceneManager.scene, personaje);
-
   // Callback de actualización del render loop
   let sendTimer = 0;
 
@@ -105,8 +102,9 @@ sceneManager.setUpdateCallback(() => {
   lastTime = currentTime;
 
   if (chatLabel && localCharacter) {
-  chatLabel.position.copy(localCharacter.position).add(new THREE.Vector3(0, 6, 0));
-}
+    chatLabel.position.copy(localCharacter.position).add(new THREE.Vector3(0, 6, 0));
+  }
+
 
 
 

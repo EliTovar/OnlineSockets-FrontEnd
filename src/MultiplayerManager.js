@@ -14,6 +14,7 @@ export class MultiplayerManager {
 
     this.socket = io(import.meta.env.PROD
       ? 'https://server-onlinesockets.onrender.com'
+      // : 'http://192.168.0.37:3000');
       : 'http://localhost:3000');
 
     this.remotePlayers = {};
@@ -38,30 +39,21 @@ export class MultiplayerManager {
       }
     });
 
-    this.socket.on('chat-message', (data) => {
-    console.log('📩 Mensaje recibido:', data);
-    const id = data.id;
-    const message = data.message;
+    this.socket.on('chat-message', ({ id, message }) => {
+      if (!this.remotePlayers[id]) return;
 
-    if (id === this.socket.id) {
-    // No actualizar para el jugador local (ya tiene su propio label)
-      return;
-    }
-    const remote = this.remotePlayers[id];
-    if (!remote) {
-      console.warn(`Mensaje de chat recibido para jugador remoto no encontrado: ${id}`);
-    return;
-  }
+      const remoteCharacter = this.remotePlayers[id].character;
+      if (!remoteCharacter) return;
 
-    // Si ya tiene etiqueta, actualizar texto, si no crear una
-    if (remote.chatLabel) {
-      remote.chatLabel.element.textContent = message;
-    } else {
-      // Crear nuevo label para ese jugador remoto
-      remote.chatLabel = GraphicEtiquetas3d(message, '', remote.personaje.position.clone().add(new THREE.Vector3(0, 6, 0)));
-      this.scene.add(remote.chatLabel);
-    }
-  });
+      if (this.remotePlayers[id].label) {
+        scene.remove(this.remotePlayers[id].label);
+      }
+
+      const label = GraphicEtiquetas3d(message, '', remoteCharacter.position.clone().add(new THREE.Vector3(0, 6, 0)));
+      scene.add(label);
+      this.remotePlayers[id].label = label;
+    });
+
 
     this.socket.on('player-joined', (data) => {
       this.addRemotePlayer(data.id, data);
