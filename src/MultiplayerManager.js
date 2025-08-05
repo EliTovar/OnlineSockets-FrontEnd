@@ -44,12 +44,18 @@ export class MultiplayerManager {
   const remoteCharacter = this.remotePlayers[id].personaje; // <-- debería ser "personaje", no "character"
   if (!remoteCharacter) return;
 
+    // 🔄 Eliminar el anterior
   if (this.remotePlayers[id].chatLabel) {
     this.scene.remove(this.remotePlayers[id].chatLabel);
+    this.remotePlayers[id].chatLabel = null;
   }
 
+  // 🟢 Crear nueva burbuja
   const label = GraphicEtiquetas3d(message, '', remoteCharacter.position.clone().add(new THREE.Vector3(0, 6, 0)));
   this.scene.add(label);
+  this.remotePlayers[id].chatLabel = label;
+
+    // ✅ Asociar correctamente al jugador remoto
   this.remotePlayers[id].chatLabel = label;
 });
 
@@ -168,9 +174,9 @@ export class MultiplayerManager {
       }
 
       // Actualizar posición de la etiqueta de chat del jugador remoto, si existe
-      if (this.chatLabel) {
+      if (remote.chatLabel) {
         const offset = new THREE.Vector3(0, 6, 0);
-        this.chatLabel.position.copy(this.model.position).add(offset);
+        remote.chatLabel.position.copy(remote.personaje.position).add(offset);
       }
 
     }
