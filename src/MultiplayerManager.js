@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { loadFBXPersonaje } from './content/models-characters/character.js';
 import { CharacterController } from './content/controls/character-control.js';
 import { GraphicEtiquetas3d } from './content/ui/chat/etiquetaChat.js';
+import { createRayLine } from './content/ui/icon-players/createRayLine.js';
 
 
 export class MultiplayerManager {
@@ -11,6 +12,9 @@ export class MultiplayerManager {
     this.scene = scene;
     this.camera = camera;
     this.domElement = domElement;
+
+    this.localRayLine = null;
+
 
     this.socket = io(import.meta.env.PROD
       ? 'https://server-onlinesockets.onrender.com'
@@ -66,16 +70,63 @@ export class MultiplayerManager {
 
     this.socket.on('player-moved', (data) => {
       const id = data.id;
+
+      //No actualizar a ti mismo
+      if(id === this.socket.id) return;
+
       if (!this.remotePlayers[id]) return;
       this.updateRemotePlayer(id, data.position, data.rotation);
       if (data.animation && this.remotePlayers[id].controller) {
         this.remotePlayers[id].controller._changeAnimations(data.animation);
       }
+
+      //mostrar rayo
+      if (data.ray) {
+      const remote = this.remotePlayers[data.id];
+      if (!remote) return;
+
+      if (!remote.rayLine) {
+        const line = createRayLine(0x00ff00); // verde para remoto
+        this.scene.add(line);
+        remote.rayLine = line;
+      }
+
+      const start = new THREE.Vector3(
+        data.ray.origin.x,
+        data.ray.origin.y,
+        data.ray.origin.z
+      );
+
+      const end = start.clone().add(
+        new THREE.Vector3(
+          data.ray.direction.x,
+          data.ray.direction.y,
+          data.ray.direction.z
+        ).multiplyScalar(50)
+      );
+
+      const positions = remote.rayLine.geometry.attributes.position.array;
+
+      positions[0] = start.x;
+      positions[1] = start.y;
+      positions[2] = start.z;
+
+      positions[3] = end.x;
+      positions[4] = end.y;
+      positions[5] = end.z;
+
+      remote.rayLine.geometry.attributes.position.needsUpdate = true;
+    }
     });
 
     this.socket.on('player-left', (id) => {
+      const remote = this.remotePlayers[id];
+      if (remote?.rayLine) {
+        this.scene.remove(remote.rayLine);
+      }
       this.removeRemotePlayer(id);
     });
+
   }
 
   addRemotePlayer(id, data) {
@@ -129,37 +180,72 @@ export class MultiplayerManager {
       });
 
       callback?.(this.personajeController, personaje);
+      this.localRayLine = createRayLine();
+      this.scene.add(this.localRayLine);
     });
   }
 
   sendUpdates() {
-    if (!this.personajeController) return;
+  if (!this.personajeController) return;
 
-    const pos = this.personajeController.personaje.position;
-    const rot = this.personajeController.personaje.rotation;
-    const anim = this.personajeController.currentAnimationName;
+  const pos = this.personajeController.personaje.position;
+  const rot = this.personajeController.personaje.rotation;
+  const anim = this.personajeController.currentAnimationName;
 
-    const moved = pos.distanceToSquared(this.lastSentPosition) > 0.0001;
-    const rotated = Math.abs(rot.y - this.lastSentRotationY) > 0.001;
-    const animChanged = anim !== this.lastSentAnimation;
+  const moved = pos.distanceToSquared(this.lastSentPosition) > 0.0001;
+  const rotated = Math.abs(rot.y - this.lastSentRotationY) > 0.001;
+  const animChanged = anim !== this.lastSentAnimation;
 
-    if (moved || rotated || animChanged) {
-      this.socket.emit('update-position', {
-        position: pos.clone(),
-        rotation: rot.clone(),
-        animation: anim
-      });
+  const rayOrigin = new THREE.Vector3();
+  const rayDirection = new THREE.Vector3();
+  this.camera.getWorldPosition(rayOrigin);
+  this.camera.getWorldDirection(rayDirection);
 
-      this.lastSentPosition.copy(pos);
-      this.lastSentRotationY = rot.y;
-      this.lastSentAnimation = anim;
+  const payload = {
+    position: pos.clone(),
+    rotation: rot.clone(),
+    animation: anim,
+    ray: {
+      origin: rayOrigin,
+      direction: rayDirection
     }
+  };
+
+  if (moved || rotated || animChanged) {
+    this.lastSentPosition.copy(pos);
+    this.lastSentRotationY = rot.y;
+    this.lastSentAnimation = anim;
   }
+
+  // 🔁 Enviar ray siempre, aunque no se mueva
+  this.socket.emit('update-position', payload);
+}
+
 
   update(deltaTime) {
     if (this.personajeController) {
       this.personajeController.update(deltaTime);
+
+      if (this.localRayLine && this.camera) {
+      const origin = new THREE.Vector3();
+      const direction = new THREE.Vector3();
+      this.camera.getWorldPosition(origin);
+      this.camera.getWorldDirection(direction);
+
+      const end = origin.clone().add(direction.clone().multiplyScalar(50)); // Largo del rayo
+      const positions = this.localRayLine.geometry.attributes.position.array;
+
+      positions[0] = origin.x;
+      positions[1] = origin.y;
+      positions[2] = origin.z;
+
+      positions[3] = end.x;
+      positions[4] = end.y;
+      positions[5] = end.z;
+
+      this.localRayLine.geometry.attributes.position.needsUpdate = true;
     }
+  }
 
     for (const id in this.remotePlayers) {
       const remote = this.remotePlayers[id];
