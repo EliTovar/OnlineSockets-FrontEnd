@@ -30,7 +30,7 @@ export function loadNero(scene, onLoad = () => {}) {
       model.scale.setScalar(2 / size.y);
 
       scene.add(model);
-      console.log("✅ Torii Gate cargado correctamente.");
+      console.log("✅ Nero cargado correctamente.");
       onLoad(model);
     },
     undefined,
