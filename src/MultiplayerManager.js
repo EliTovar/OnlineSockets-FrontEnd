@@ -208,6 +208,10 @@ export class MultiplayerManager {
         if (eyesModel) {
           this.localEyesModel = eyesModel;
           eyesModel.visible = false; // ⛔️ Ocultar al inicio
+
+          eyesModel.layers.set(1); // Layer 1
+          this.camera.layers.enable(0); // La camara solo vea layer 0
+
           this.scene.add(eyesModel);
         }
       })
@@ -286,7 +290,7 @@ export class MultiplayerManager {
     this.camera.getWorldDirection(direction);
 
     // Posición frente a la cámara
-    const offset = direction.clone().multiplyScalar(2); //Distancia frente a la cámara 
+    const offset = direction.clone().multiplyScalar(-2); //Distancia frente a la cámara 
     this.localEyesModel.position.copy(origin).add(offset);
     // Que mire en la dirección de la cámara
     this.localEyesModel.lookAt(origin.clone().add(direction));

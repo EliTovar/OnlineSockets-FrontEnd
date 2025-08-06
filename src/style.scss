@@ -69,6 +69,10 @@
   animation: fadeIn 0.3s ease-out;
   transition: opacity 0.5s ease;
   pointer-events: none;
+
+  white-space: normal;      /* permite saltos de línea */
+  word-wrap: break-word;    /* rompe palabras largas */
+  transform: translate(-50%, -100%);
 }
 
 .chat-bubble.fade-out {
