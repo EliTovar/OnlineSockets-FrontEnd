@@ -5,6 +5,8 @@ import { loadFBXPersonaje } from './content/models-characters/character.js';
 import { CharacterController } from './content/controls/character-control.js';
 import { GraphicEtiquetas3d } from './content/ui/chat/etiquetaChat.js';
 import { createRayLine } from './content/ui/icon-players/createRayLine.js';
+import { createEyesModel } from './content/models-characters/eyesPlayers.js'; // ⬅ Asegúrate de importar
+
 
 
 export class MultiplayerManager {
@@ -14,7 +16,7 @@ export class MultiplayerManager {
     this.domElement = domElement;
 
     this.localRayLine = null;
-
+    this.localEyesModel = null;
 
     this.socket = io(import.meta.env.PROD
       ? 'https://server-onlinesockets.onrender.com'
@@ -80,6 +82,14 @@ export class MultiplayerManager {
         this.remotePlayers[id].controller._changeAnimations(data.animation);
       }
 
+      //Guardar rayLine para ojos del remoto
+      if (data.ray) {
+        this.remotePlayers[id].rayLineData = {
+          origin: data.ray.origin,
+          direction: data.ray.direction
+        }
+      }
+
       //mostrar rayo
       if (data.ray) {
       const remote = this.remotePlayers[data.id];
@@ -140,8 +150,18 @@ export class MultiplayerManager {
 
       this.remotePlayers[id] = {
         personaje,
-        controller: new CharacterController(personaje, animations, null, false)
+        controller: new CharacterController(personaje, animations, null, false),
+        eyesModel: null,
       };
+
+      //Cargar y añadir modelo de ojos
+      createEyesModel((eyesModel) => {
+        if (eyesModel) {
+          eyesModel.position.copy(personaje.position);
+          this.scene.add(eyesModel);
+          this.remotePlayers[id].eyesModel = eyesModel;
+        }
+      });
 
       this.loadingPlayers.delete(id);
     });
@@ -179,9 +199,18 @@ export class MultiplayerManager {
         rotation: personaje.rotation
       });
 
-      callback?.(this.personajeController, personaje);
       this.localRayLine = createRayLine();
       this.scene.add(this.localRayLine);
+
+      //Carga de modelo Ojos
+      createEyesModel((eyesModel) => {
+        if (eyesModel) {
+          this.localRayLine.add(eyesModel);
+          this.scene.add(eyesModel);
+        }
+      })
+
+      callback?.(this.personajeController, personaje);
     });
   }
 
@@ -247,16 +276,43 @@ export class MultiplayerManager {
     }
   }
 
+  // Actualiza ojos
+  if (this.localEyesModel && this.camera) {
+    const origin = new THREE.Vector3();
+    const direction = new THREE.Vector3();
+    this.camera.getWorldPosition(origin);
+    this.camera.getWorldDirection(direction);
+
+    // Posición frente a la cámara
+    const offset = direction.clone().multiplyScalar(2); //Distancia frente a la cámara 
+    this.localEyesModel.position.copy(origin).add(offset);
+
+    // Que mire en la dirección de la cámara
+    this.localEyesModel.lookAt(origin.clone().add(direction));
+  }
+
     for (const id in this.remotePlayers) {
       const remote = this.remotePlayers[id];
       remote.controller.update(deltaTime);
 
+      // Posición y Rotación del personaje
       if (remote.targetPosition) {
         remote.personaje.position.lerp(remote.targetPosition, 0.1);
       }
 
       if (typeof remote.targetRotationY === 'number') {
         remote.personaje.rotation.y += (remote.targetRotationY - remote.personaje.rotation.y) * 0.1;
+      }
+
+      // 👁️ Actualizar modelo de ojos de remoto
+      if (remote.eyesModel && remote.rayLineData) {
+        remote.eyesModel.visible = true; //Solo mostrar cuando se pueda posicionar.
+        const { origin, direction } = remote.rayLineData;
+        const pos = new THREE.Vector3(origin.x, origin.y, origin.z);
+        const dir = new THREE.Vector3(direction.x, direction.y, direction.z);
+        const offset = dir.clone().multiplyScalar(2);
+        remote.eyesModel.position.copy(pos).add(offset);
+        remote.eyesModel.lookAt(pos.clone().add(dir));
       }
 
       // Actualizar posición de la etiqueta de chat del jugador remoto, si existe
