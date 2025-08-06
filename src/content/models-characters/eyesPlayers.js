@@ -9,7 +9,7 @@ export function createEyesModel(callback) {
     path,
     (gltf) => {
       const model = gltf.scene;
-      model.scale.set(1.5, 1.5, 1.5
+      model.scale.set(5, 5, 5
       ); // Ajusta según el tamaño real
       callback(model);
     },
