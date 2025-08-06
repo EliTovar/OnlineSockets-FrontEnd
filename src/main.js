@@ -15,6 +15,7 @@ import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
 
 import { addSphereWithWaves } from './content/world/test/sphere_with_waves.js';
 import { initDraggableObjects } from './content/world/test/DraggableObjects.js';
+import { loadNero } from './content/world/nero.js';
 
 
 
@@ -53,6 +54,10 @@ sceneManager.scene.add(cube.mesh);
 
 //! Japanese Torii gate
 loadGLTFToriiGate(sceneManager.scene, (toriiGate) => {
+});
+
+//! Nero
+loadNero(sceneManager.scene, (neroBlack) => {
 });
 
 
