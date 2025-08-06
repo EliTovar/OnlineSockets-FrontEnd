@@ -157,6 +157,7 @@ export class MultiplayerManager {
       //Cargar y añadir modelo de ojos
       createEyesModel((eyesModel) => {
         if (eyesModel) {
+          eyesModel.visible = false; // Ocultar hasta que se escriba rayLineData.
           eyesModel.position.copy(personaje.position);
           this.scene.add(eyesModel);
           this.remotePlayers[id].eyesModel = eyesModel;
@@ -205,7 +206,8 @@ export class MultiplayerManager {
       //Carga de modelo Ojos
       createEyesModel((eyesModel) => {
         if (eyesModel) {
-          this.localRayLine.add(eyesModel);
+          this.localEyesModel = eyesModel;
+          eyesModel.visible = false; // ⛔️ Ocultar al inicio
           this.scene.add(eyesModel);
         }
       })
@@ -286,9 +288,10 @@ export class MultiplayerManager {
     // Posición frente a la cámara
     const offset = direction.clone().multiplyScalar(2); //Distancia frente a la cámara 
     this.localEyesModel.position.copy(origin).add(offset);
-
     // Que mire en la dirección de la cámara
     this.localEyesModel.lookAt(origin.clone().add(direction));
+
+    this.localEyesModel.visible = true; //Mostrar solo cuando ya está bien posicionado
   }
 
     for (const id in this.remotePlayers) {
