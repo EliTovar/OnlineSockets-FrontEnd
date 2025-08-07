@@ -18,6 +18,8 @@ import { initDraggableObjects } from './content/world/test/DraggableObjects.js';
 import { loadNero } from './content/world/nero.js';
 
 
+import { initDropdowns } from './content/ui/dropdown.js';
+initDropdowns();
 
 
 // Crear escena, cámara y renderer
