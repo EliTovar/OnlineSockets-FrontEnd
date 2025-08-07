@@ -12,13 +12,14 @@ import { setupChatLabelInput } from './content/ui/chat/chat.js';
 
 import { loadGLTFToriiGate } from './content/world/Torii-gate.js';
 // import { loadGLTFClouds } from './content/world/cloudring.js';
+import { loadNero } from './content/world/nero.js';
 
 import { addSphereWithWaves } from './content/world/test/sphere_with_waves.js';
 import { initDraggableObjects } from './content/world/test/DraggableObjects.js';
-import { loadNero } from './content/world/nero.js';
-
+import { BouncingBallsManager } from './content/world/test/BouncingBalls/BouncingBallsManager.js';
 
 import { initDropdowns } from './content/ui/dropdown.js';
+
 initDropdowns();
 
 
@@ -71,7 +72,8 @@ const waterSphere = addSphereWithWaves(sceneManager.scene, sceneManager.camera, 
 //! Draggable Objects (raycaster)
 const draggableSystem = initDraggableObjects(sceneManager.scene, sceneManager.camera, controls);
 
-
+//! BouncingBalls
+const bouncingBallsManager = new BouncingBallsManager(sceneManager);
 
 // Esperar a que se cargue el personaje local
 multiplayer.spawnLocalPlayer(async (controller, personaje) => {
@@ -108,6 +110,7 @@ sceneManager.setUpdateCallback(() => {
     localCharacter.chatLabel.position.copy(localCharacter.position).add(new THREE.Vector3(0, 6, 0));
   }
 
+  bouncingBallsManager.tick(deltaTime); //BpuncingBalls
 
 
   if (draggableSystem?.tick) draggableSystem.tick();
