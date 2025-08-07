@@ -11,8 +11,8 @@
 
     <!-- <link rel="stylesheet" href="/src/UI/key_indications.css"> -->
     
-    <script type="module" crossorigin src="/OnlineSockets-FrontEnd/assets/index-CE9-kZ5c.js"></script>
-    <link rel="stylesheet" crossorigin href="/OnlineSockets-FrontEnd/assets/index-y_eXwWTK.css">
+    <script type="module" crossorigin src="/OnlineSockets-FrontEnd/assets/index-DPIFxBea.js"></script>
+    <link rel="stylesheet" crossorigin href="/OnlineSockets-FrontEnd/assets/index-DjIilb-5.css">
   </head>
   <body>
     <div id="app"></div>
@@ -21,34 +21,24 @@
       <canvas id="experience-canvas" class="experience-canvas"></canvas>
       <div id="texto-sobrepuesto">
         <!--! Información de teclas -->
-      <button id="toggleKeysBtn" class="fixed top-4 right-4 p-2 rounded-full shadow-md z-50">
+      <!-- Botón de ayuda flotante -->
+      <div id="helpDropdown" class="relative z-50">
+        <button id="toggleKeysBtn" class="fixed top-4 right-4 p-2 rounded-full shadow-md bg-white">
+          <!-- Icono de ayuda -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8" />
+          </svg>
+        </button>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8" />
-        </svg>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-      </button>
-
-      <!-- Caja de instrucciones -->
-      <div id="keysText" class="fixed top-16 right-4 bg-white p-4 rounded-md shadow-lg w-56 transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden pointer-events-none z-40">
-        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">W</kbd> to walk</p>
-        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">S</kbd> to backward</p>
-        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">A</kbd> to go left</p>
-        <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">D</kbd> to go right</p>
-        <p class="text-sm text-black"><kbd class="kbd kbd-sm text-black">SPACE</kbd> to jump</p>
+        <!-- Caja de instrucciones -->
+        <div id="keysText" class="fixed top-12 right-4 bg-white p-4 rounded-md shadow-lg w-56 transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden pointer-events-none">
+          <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">W</kbd> to walk</p>
+          <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">S</kbd> to backward</p>
+          <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">A</kbd> to go left</p>
+          <p class="text-sm text-black mb-1"><kbd class="kbd kbd-sm text-black">D</kbd> to go right</p>
+          <p class="text-sm text-black"><kbd class="kbd kbd-sm text-black">SPACE</kbd> to jump</p>
+        </div>
       </div>
-
-      <script>
-        const toggleBtn = document.getElementById('toggleKeysBtn');
-        const keysText = document.getElementById('keysText');
-
-        toggleBtn.addEventListener('click', () => {
-          keysText.classList.toggle('opacity-0');
-          keysText.classList.toggle('max-h-0');
-          keysText.classList.toggle('pointer-events-none');
-        });
-      </script>
 
 
           <!--! CONTROLES MÓVIL -->
@@ -65,13 +55,43 @@
           <!-- Botón de salto -->
           <div class="mt-2">
             <button id="btn-jump" class="jump-btn"><kbd class="kbd kbd-md text-black">JUMP!</kbd></button>
-
           </div>
         </div>
 
           <!--! INPUT -->
         <input type="text" id="chatInput" placeholder="Type here" class="input input-ghost" />
-        
+
+        <!--! Menú desplegable para FUNCIONES -->
+        <!-- Menú desplegable con cierre automático -->
+    <div id="menuDropdown" class="relative z-50">
+      <!-- Botón -->
+      <button id="toggleMenuBtn" class="fixed top-10 right-4 p-2 rounded-full shadow-md z-50">
+        <!-- Icono hamburguesa -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <g fill="none" fill-rule="evenodd">
+            <path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z" />
+            <path fill="currentColor" d="M10 3a1 1 0 0 0-2 0v2a1 1 0 0 0 2 0zM5.464 4.05A1 1 0 1 0 4.05 5.464L5.464 6.88A1 1 0 1 0 6.88 5.464zm4.327 4.16c-.978-.326-1.907.603-1.582 1.58l3.533 10.598c.357 1.072 1.84 1.158 2.319.134l2.055-4.406l4.406-2.055c1.024-.478.938-1.962-.134-2.319zm4.159-4.16a1 1 0 0 1 0 1.414L12.536 6.88a1 1 0 1 1-1.415-1.415l1.415-1.414a1 1 0 0 1 1.414 0M2 9a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1m4.879 3.536a1 1 0 1 0-1.415-1.415L4.05 12.536a1 1 0 1 0 1.414 1.414z" />
+          </g>
+        </svg>
+      </button>
+
+    <!-- Menú -->
+    <div id="menuContent" class="fixed top-18 right-4 bg-white p-4 rounded-md shadow-lg w-56 transition-all duration-300 ease-in-out opacity-0 max-h-0 overflow-hidden pointer-events-none">
+      <ul class="menu menu-compact">
+        <li><button class="menu-option" data-value="BouncingBalls">BouncingBalls</button></li>
+        <!-- <li>
+          <details>
+            <summary>Submenú</summary>
+            <ul class="p-2">
+              <li><a href="#">Sub 1</a></li>
+              <li><a href="#">Sub 2</a></li>
+            </ul>
+          </details>
+        </li> -->
+      </ul>
+    </div>
+</div>
+
         </div>
       </div>
         </div>
