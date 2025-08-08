@@ -2,6 +2,8 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
+import { physicsWorld, defaultMaterial } from '../PhysicsWorld';
+
 export function initDraggableObjects(scene, camera, controls) {
   const raycaster = new THREE.Raycaster();
   const clickMouse = new THREE.Vector2();
@@ -13,9 +15,7 @@ export function initDraggableObjects(scene, camera, controls) {
   let controlsWasEnabled = true;
 
   //! Mundo físico =============================
-  const world = new CANNON.World({
-    gravity: new CANNON.Vec3(0, -9.81, 0)
-  });
+  const world = physicsWorld; //Usa el mundo global importado
 
   const timeStep = 1 / 60;
 
@@ -50,26 +50,31 @@ export function initDraggableObjects(scene, camera, controls) {
     addPhysicsObject(floorMesh, floorBody);
   }
 
-  function createBox() {
-    const size = { x: 6, y: 6, z: 6 };
-    const pos = { x: 15, y: size.y / 2, z: 15 };
+function createBox(
+  size = { x: 6, y: 6, z: 6 },
+  position = new THREE.Vector3(15, 2, 10)
+) {
+  const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+  const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.castShadow = true;
+  mesh.position.copy(position);
+  mesh.userData.draggable = true; // Para que se pueda arrastrar
+  mesh.userData.name = 'BOX';
+  scene.add(mesh);
 
-    const boxMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(size.x, size.y, size.z),
-      new THREE.MeshPhongMaterial({ color: 0xDC143C, wireframe: true })
-    );
-    boxMesh.position.set(pos.x, pos.y, pos.z);
-    boxMesh.userData.draggable = true;
-    boxMesh.userData.name = 'BOX';
+  const shape = new CANNON.Box(new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2));
+  const body = new CANNON.Body({
+    mass: 1,
+    shape,
+    position: new CANNON.Vec3(position.x, position.y, position.z),
+    material: defaultMaterial,
+  });
 
-    const boxBody = new CANNON.Body({
-      mass: 1,
-      shape: new CANNON.Box(new CANNON.Vec3(size.x / 2, size.y / 2, size.z / 2)),
-      position: new CANNON.Vec3(pos.x, pos.y, pos.z)
-    });
+  addPhysicsObject(mesh, body);
+}
 
-    addPhysicsObject(boxMesh, boxBody);
-  }
+
 
   function createSphere() {
     const radius = 4;

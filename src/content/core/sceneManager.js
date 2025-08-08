@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControlManager } from '../controls/OrbitControlManager.js';
+import { physicsWorld } from '../world/PhysicsWorld.js';
 
 export class SceneManager {
   constructor() {
@@ -35,7 +36,10 @@ export class SceneManager {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // Variables para físicas
     this.updateCallback = null;
+    this.lastTime = null;
+
     window.addEventListener('resize', () => this.onWindowResize());
   }
 
@@ -43,8 +47,18 @@ export class SceneManager {
     this.renderer.setAnimationLoop(this.animate.bind(this));
   }
 
-  animate() {
+  animate(time) {
+    // Paso de físicas (Cannon.js)
+    if (this.lastTime !== null) {
+      const deltaTime = (time - this.lastTime) / 1000;
+      physicsWorld.step(1 / 60, deltaTime);
+    }
+    this.lastTime = time;
+
+    // Lógica personalizada (actualizar posiciones de meshes desde bodies)
     if (this.updateCallback) this.updateCallback();
+
+    // Controles y render
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
