@@ -113,7 +113,7 @@ sceneManager.setUpdateCallback(() => {
   bouncingBallsManager.tick(deltaTime); //BpuncingBalls
 
 
-  if (draggableSystem?.tick) draggableSystem.tick();
+  if (draggableSystem?.tick) draggableSystem.tick(deltaTime);
 
   controls.update();
   multiplayer.update(deltaTime);
